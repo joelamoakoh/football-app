@@ -79,5 +79,34 @@ class FootballAPI {
         }
         return counter
     }
+    fun listTeamsBySelectedPriority(priority: Int): String {
+        return if (footballs.isEmpty()) {
+            "No teams stored"
+        } else {
+            var listOfTeams = ""
+            for (i in footballs.indices) {
+                if (footballs[i].teamPosition == priority) {
+                    listOfTeams +=
+                        """$i: ${footballs[i]}
+                        """.trimIndent()
+                }
+            }
+            if (listOfTeams.equals("")) {
+                "No teams with priority: $priority"
+            } else {
+                "${numberOfTeamsByPriority(priority)} teams with priority $priority: $listOfTeams"
+            }
+        }
+    }
+
+    fun numberOfTeamsByPriority(priority: Int): Int {
+        var counter = 0
+        for (football in footballs) {
+            if (football.teamPosition == priority) {
+                counter++
+            }
+        }
+        return counter
+    }
 
 }

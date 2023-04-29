@@ -126,5 +126,43 @@ class FootballAPITest {
         }
 
     }
+    @Test
+    fun `listTeamsBySelectedPriority returns No Teams when ArrayList is empty`() {
+        assertEquals(0, emptyTeams!!.numberOfTeams())
+        assertTrue(emptyTeams!!.listTeamsBySelectedPriority(1).lowercase().contains("no teams")
+        )
+    }
+
+    @Test
+    fun `listTeamsBySelectedPriority returns no teams when no teams of that priority exist`() {
+        assertEquals(5, populatedTeams!!.numberOfTeams())
+        val priority2String = populatedTeams!!.listTeamsBySelectedPriority(2).lowercase()
+        assertTrue(priority2String.contains("no teams"))
+        assertTrue(priority2String.contains("2"))
+    }
+
+    @Test
+    fun `listTeamsBySelectedPriority returns all teams that match that priority when teams of that priority exist`() {
+        assertEquals(5, populatedTeams!!.numberOfTeams())
+        val priority1String = populatedTeams!!.listTeamsBySelectedPriority(1).lowercase()
+        assertTrue(priority1String.contains("1 team"))
+        assertTrue(priority1String.contains("priority 1"))
+        assertTrue(priority1String.contains("summer holiday"))
+        assertFalse(priority1String.contains("swim"))
+        assertFalse(priority1String.contains("learning kotlin"))
+        assertFalse(priority1String.contains("code app"))
+        assertFalse(priority1String.contains("test app"))
+
+
+        val priority4String = populatedTeams!!.listTeamsBySelectedPriority(4).lowercase(Locale.getDefault())
+        assertTrue(priority4String.contains("2 team"))
+        assertTrue(priority4String.contains("priority 4"))
+        assertFalse(priority4String.contains("swim"))
+        assertTrue(priority4String.contains("code app"))
+        assertTrue(priority4String.contains("test app"))
+        assertFalse(priority4String.contains("learning kotlin"))
+        assertFalse(priority4String.contains("summer holiday"))
+    }
+
 }
 
