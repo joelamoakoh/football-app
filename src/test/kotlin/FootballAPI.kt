@@ -142,7 +142,7 @@ class FootballAPITest {
     }
 
     @Test
-    fun `listTeamsBySelectedPriority returns all teams that match that priority when teams of that priority exist`() {
+    fun `listTeamsBySelectedPriority returns all teams that match that priority when teams of that position exist`() {
         assertEquals(5, populatedTeams!!.numberOfTeams())
         val priority1String = populatedTeams!!.listTeamsBySelectedPriority(1).lowercase()
         assertTrue(priority1String.contains("1 team"))
@@ -180,6 +180,29 @@ class FootballAPITest {
             assertEquals(4, populatedTeams!!.numberOfTeams())
             assertEquals(learnKotlin, populatedTeams!!.deleteTeam(0))
             assertEquals(3, populatedTeams!!.numberOfTeams())
+        }
+    }
+    @Nested
+    inner class UpdateTeams{
+        @Test
+        fun `updating a team that does not exist returns false`(){
+            assertFalse(populatedTeams!!.updateTeam(6, Football("Updating Note", 2, "Work", false)))
+            assertFalse(populatedTeams!!.updateTeam(-1, Football("Updating Note", 2, "Work", false)))
+            assertFalse(emptyTeams!!.updateTeam(0, Football("Updating Note", 2, "Work", false)))
+        }
+
+        @Test
+        fun `updating a team that exists returns true and updates`() {
+            assertEquals(swim, populatedTeams!!.findTeam(4))
+            assertEquals("Swim - Pool", populatedTeams!!.findTeam(4)!!.teamName)
+            assertEquals(3, populatedTeams!!.findTeam(4)!!.teamPosition)
+            assertEquals("Hobby", populatedTeams!!.findTeam(4)!!.League)
+
+
+            assertTrue(populatedTeams!!.updateTeam(4, Football("Updating Note", 2, "College", false)))
+            assertEquals("Updating Note", populatedTeams!!.findTeam(4)!!.teamName)
+            assertEquals(2, populatedTeams!!.findTeam(4)!!.teamPosition)
+            assertEquals("College", populatedTeams!!.findTeam(4)!!.League)
         }
     }
 

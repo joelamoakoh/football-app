@@ -29,7 +29,7 @@ class FootballAPI {
         }
         else null
     }
-    private fun  isValidListIndex(index: Int, list : List <Any>): Boolean{
+    fun  isValidListIndex(index: Int, list : List <Any>): Boolean{
         return (index >= 0 && index < list.size)
     }
     fun listActiveTeams(): String {
@@ -113,5 +113,25 @@ class FootballAPI {
             footballs.removeAt(indexToDelete)
         } else null
     }
+    fun updateTeam(indexToUpdate: Int, football:Football?): Boolean {
+        val foundTeam = findTeam(indexToUpdate)
+
+
+        if ((foundTeam != null) && (football != null)) {
+            foundTeam.teamName = football.teamName
+            foundTeam.teamPosition = football.teamPosition
+            foundTeam.League = football.League
+            return true
+        }
+
+
+        return false
+    }
+
+    fun isValidIndex(index: Int) :Boolean{
+        return isValidListIndex(index, footballs);
+    }
+
+
 
 }

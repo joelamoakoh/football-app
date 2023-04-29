@@ -60,10 +60,27 @@ fun listTeams(){
     println(footballAPI.listAllTeams())
 }
 
-fun updateTeams(){
-    logger.info { "updateTeams() function invoked" }
+fun updateTeams() {
+    listTeams()
+    if (footballAPI.numberOfTeams() > 0) {
+        //only ask the user to choose the note if notes exist
+        val indexToUpdate = readNextInt("Enter the index of the team to update: ")
+        if (footballAPI.isValidIndex(indexToUpdate)) {
+            val teamName = readNextLine("Enter team Name: ")
+            val teamPosition= readNextInt("Enter league position")
+            val League = readNextLine("Enter League")
 
+            if (footballAPI.updateTeam(indexToUpdate, Football(teamName, teamPosition, League ,false))){
+                println("Update Successful")
+            } else {
+                println("Update Failed")
+            }
+        } else {
+            println("There are no notes for this index number")
+        }
+    }
 }
+
 
 fun deleteTeams(){
     listTeams()
