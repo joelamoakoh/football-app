@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import persistence.XMLSerializer
+import java.io.File
 import java.util.*
 
 
@@ -16,8 +18,8 @@ class FootballAPITest {
     private var codeApp: Football? = null
     private var testApp: Football? = null
     private var swim: Football? = null
-    private var populatedTeams: FootballAPI? = FootballAPI()
-    private var emptyTeams: FootballAPI? = FootballAPI()
+    private var populatedTeams: FootballAPI? = FootballAPI(XMLSerializer(File("teams.xml")))
+    private var emptyTeams: FootballAPI? = FootballAPI(XMLSerializer(File("teams.xml")))
 
     @BeforeEach
     fun setup() {
@@ -142,7 +144,7 @@ class FootballAPITest {
     }
 
     @Test
-    fun `listTeamsBySelectedPriority returns all teams that match that priority when teams of that priority exist`() {
+    fun `listTeamsBySelectedPriority returns all teams that match that priority when teams of that position exist`() {
         assertEquals(5, populatedTeams!!.numberOfTeams())
         val priority1String = populatedTeams!!.listTeamsBySelectedPriority(1).lowercase()
         assertTrue(priority1String.contains("1 team"))
@@ -182,7 +184,70 @@ class FootballAPITest {
             assertEquals(3, populatedTeams!!.numberOfTeams())
         }
     }
+    @Nested
+    inner class UpdateTeams{
+        @Test
+        fun `updating a team that does not exist returns false`(){
+            assertFalse(populatedTeams!!.updateTeam(6, Football("Updating Note", 2, "Work", false)))
+            assertFalse(populatedTeams!!.updateTeam(-1, Football("Updating Note", 2, "Work", false)))
+            assertFalse(emptyTeams!!.updateTeam(0, Football("Updating Note", 2, "Work", false)))
+        }
 
+        @Test
+        fun `updating a team that exists returns true and updates`() {
+            assertEquals(swim, populatedTeams!!.findTeam(4))
+            assertEquals("Swim - Pool", populatedTeams!!.findTeam(4)!!.teamName)
+            assertEquals(3, populatedTeams!!.findTeam(4)!!.teamPosition)
+            assertEquals("Hobby", populatedTeams!!.findTeam(4)!!.League)
+
+
+            assertTrue(populatedTeams!!.updateTeam(4, Football("Updating Note", 2, "College", false)))
+            assertEquals("Updating Note", populatedTeams!!.findTeam(4)!!.teamName)
+            assertEquals(2, populatedTeams!!.findTeam(4)!!.teamPosition)
+            assertEquals("College", populatedTeams!!.findTeam(4)!!.League)
+        }
+    }
+
+    @Nested
+    inner class PersistenceTests {
+
+        @Test
+        fun `saving and loading an empty collection in XML doesn't crash app`() {
+
+            val storingTeams = FootballAPI(XMLSerializer(File("teams.xml")))
+            storingTeams.store()
+
+
+            val loadedTeams = FootballAPI(XMLSerializer(File("teams.xml")))
+            loadedTeams.load()
+
+
+            assertEquals(0, storingTeams.numberOfTeams())
+            assertEquals(0, loadedTeams.numberOfTeams())
+            assertEquals(storingTeams.numberOfTeams(), loadedTeams.numberOfTeams())
+        }
+
+        @Test
+        fun `saving and loading an loaded collection in XML doesn't loose data`() {
+            val storingTeams = FootballAPI(XMLSerializer(File("teams.xml")))
+            storingTeams.add(testApp!!)
+            storingTeams.add(swim!!)
+            storingTeams.add(summerHoliday!!)
+            storingTeams.store()
+
+            //Loading notes.xml into a different collection
+            val loadedTeams = FootballAPI(XMLSerializer(File("teams.xml")))
+            loadedTeams.load()
+
+            //Comparing the source of the notes (storingNotes) with the XML loaded notes (loadedNotes)
+            assertEquals(3, storingTeams.numberOfTeams())
+            assertEquals(3, loadedTeams.numberOfTeams())
+            assertEquals(storingTeams.numberOfTeams(), loadedTeams.numberOfTeams())
+            assertEquals(storingTeams.findTeam(0), loadedTeams.findTeam(0))
+            assertEquals(storingTeams.findTeam(1), loadedTeams.findTeam(1))
+            assertEquals(storingTeams.findTeam(2), loadedTeams.findTeam(2))
+        }
+    }
 
 }
 

@@ -1,8 +1,9 @@
 package models
 
-data class Football(val teamName: String,
-                val teamPosition: Int,
-                val League: String,
-                val isTeamArchived :Boolean){
+data class Football(
+    var teamName: String,
+    var teamPosition: Int,
+    var League: String,
+    val isTeamArchived :Boolean){
 
 }
