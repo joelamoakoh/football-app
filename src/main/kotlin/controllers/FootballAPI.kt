@@ -142,6 +142,17 @@ class FootballAPI(serializerType: Serializer) {
     fun store() {
         serializer.write(footballs)
     }
+    fun archiveTeam(indexToArchive: Int): Boolean {
+        if (isValidIndex(indexToArchive)) {
+            val teamToArchive = footballs[indexToArchive]
+            if (!teamToArchive.isTeamArchived) {
+                teamToArchive.isTeamArchived = true
+                return true
+            }
+        }
+        return false
+    }
+
 
 
 
