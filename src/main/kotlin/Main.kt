@@ -1,6 +1,9 @@
+import mu.KotlinLogging
 import utils.ScannerInput
 import java.lang.System.exit
+import kotlin.system.exitProcess
 
+private val logger = KotlinLogging.logger {}
 
 fun main(args: Array<String>) {
     runMenu()
@@ -24,32 +27,36 @@ fun mainMenu() : Int {
 fun runMenu() {
     do {
         when (val option = mainMenu()) {
-            1  -> addNote()
-            2  -> listNotes()
-            3  -> updateNote()
-            4  -> deleteNote()
+            1  -> addTeams()
+            2  -> listTeams()
+            3  -> updateTeams()
+            4  -> deleteTeams()
             0  -> exitApp()
             else -> println("Invalid option entered: $option")
         }
     } while (true)
 }
-fun addNote(){
-    println("You chose Add Team")
+fun addTeams(){
+    logger.info { "addTeams() function invoked" }
+
 }
 
-fun listNotes(){
-    println("You chose List Teams")
+fun listTeams(){
+    logger.info { "listTeams() function invoked" }
+
 }
 
-fun updateNote(){
-    println("You chose Update a team")
+fun updateTeams(){
+    logger.info { "updateTeams() function invoked" }
+
 }
 
-fun deleteNote(){
-    println("You chose Delete a team")
+fun deleteTeams(){
+    logger.info { "deleteTeams() function invoked" }
+
 }
 
 fun exitApp(){
     println("Ill see you lad")
-    exit(0)
+    exitProcess(0)
 }
