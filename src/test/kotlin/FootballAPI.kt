@@ -248,6 +248,28 @@ class FootballAPITest {
             assertEquals(storingTeams.findTeam(2), loadedTeams.findTeam(2))
         }
     }
+    @Nested
+    inner class ArchiveTeams {
+        @Test
+        fun `archiving a team that does not exist returns false`(){
+            assertFalse(populatedTeams!!.archiveTeam(6))
+            assertFalse(populatedTeams!!.archiveTeam(-1))
+            assertFalse(emptyTeams!!.archiveTeam(0))
+        }
+
+        @Test
+        fun `archiving an already archived TEAM returns false`(){
+            assertTrue(populatedTeams!!.findTeam(2)!!.isTeamArchived)
+            assertFalse(populatedTeams!!.archiveTeam(2))
+        }
+
+        @Test
+        fun `archiving an active team that exists returns true and archives`() {
+            assertFalse(populatedTeams!!.findTeam(1)!!.isTeamArchived)
+            assertTrue(populatedTeams!!.archiveTeam(1))
+            assertTrue(populatedTeams!!.findTeam(1)!!.isTeamArchived)
+        }
+    }
 
 }
 

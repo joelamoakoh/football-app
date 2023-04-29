@@ -26,6 +26,7 @@ fun mainMenu() : Int {
          > |   2) List all English Teams    |
          > |   3) Update a Team             |
          > |   4) Delete a Team             |
+         > |   5) Archive a team            |
          > ----------------------------------
          > |   20) Save Teams               |
          > |   21) Load Teams               |
@@ -41,6 +42,7 @@ fun runMenu() {
             2  -> listTeams()
             3  -> updateTeams()
             4  -> deleteTeams()
+            5  -> archiveTeams()
             0  -> exitApp()
             20 -> save()
             21 -> load()
@@ -62,9 +64,28 @@ fun addTeams(){
     }
 }
 
-fun listTeams(){
-    println(footballAPI.listAllTeams())
+fun listTeams() {
+    if (footballAPI.numberOfTeams() > 0) {
+        val option = readNextInt(
+            """
+                  > --------------------------------
+                  > |   1) View ALL Teams          |
+                  > |   2) View ACTIVE Teams       |
+                  > |   3) View ARCHIVED Teams     |
+                  > --------------------------------
+         > ==>> """.trimMargin(">"))
+
+        when (option) {
+            1 -> listAllTeams();
+            2 -> listActiveTeams();
+            3 -> listArchivedTeams();
+            else -> println("Invalid option entered: " + option);
+        }
+    } else {
+        println("Option Invalid - No notes stored");
+    }
 }
+
 
 fun updateTeams() {
     listTeams()
@@ -123,6 +144,31 @@ fun load() {
         System.err.println("Error reading from file: $e")
     }
 }
+fun listActiveTeams() {
+    println(footballAPI.listActiveTeams())
+}
+
+fun archiveTeams() {
+    listActiveTeams()
+    if (footballAPI.numberOfActiveTeams() > 0) {
+        //only ask if team exists
+        val indexToArchive = readNextInt("Enter the index of the team to archive... ")
+        //pass the index of the team for archiving and check for success.
+        if (footballAPI.archiveTeam(indexToArchive)) {
+            println("Archive Successful!")
+        } else {
+            println("Archive NOT Successful")
+        }
+    }
+}
+fun listAllTeams() {
+    println(footballAPI.listAllTeams())
+}
+
+fun listArchivedTeams() {
+    println(footballAPI.listArchivedTeams())
+}
+
 
 
 
