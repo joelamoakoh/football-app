@@ -108,5 +108,10 @@ class FootballAPI {
         }
         return counter
     }
+    fun deleteTeam(indexToDelete: Int): Football? {
+        return if (isValidListIndex(indexToDelete, footballs)) {
+            footballs.removeAt(indexToDelete)
+        } else null
+    }
 
 }

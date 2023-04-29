@@ -163,6 +163,26 @@ class FootballAPITest {
         assertFalse(priority4String.contains("learning kotlin"))
         assertFalse(priority4String.contains("summer holiday"))
     }
+    @Nested
+    inner class DeleteTeams {
+
+        @Test
+        fun `deleting a team that does not exist, returns null`() {
+            assertNull(emptyTeams!!.deleteTeam(0))
+            assertNull(populatedTeams!!.deleteTeam(-1))
+            assertNull(populatedTeams!!.deleteTeam(5))
+        }
+
+        @Test
+        fun `deleting a note that exists delete and returns deleted object`() {
+            assertEquals(5, populatedTeams!!.numberOfTeams())
+            assertEquals(swim, populatedTeams!!.deleteTeam(4))
+            assertEquals(4, populatedTeams!!.numberOfTeams())
+            assertEquals(learnKotlin, populatedTeams!!.deleteTeam(0))
+            assertEquals(3, populatedTeams!!.numberOfTeams())
+        }
+    }
+
 
 }
 
