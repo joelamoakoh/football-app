@@ -1,8 +1,10 @@
 package controllers
 
 import models.Football
+import persistence.Serializer
 
-class FootballAPI {
+class FootballAPI(serializerType: Serializer) {
+    private var serializer:Serializer = serializerType
     private var footballs = ArrayList<Football>()
 
     fun add(football: Football): Boolean {
@@ -130,6 +132,15 @@ class FootballAPI {
 
     fun isValidIndex(index: Int) :Boolean{
         return isValidListIndex(index, footballs);
+    }
+    @Throws(Exception::class)
+    fun load() {
+        footballs = serializer.read() as ArrayList<Football>
+    }
+
+    @Throws(Exception::class)
+    fun store() {
+        serializer.write(footballs)
     }
 
 

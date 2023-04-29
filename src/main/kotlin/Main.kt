@@ -1,13 +1,15 @@
 import controllers.FootballAPI
 import models.Football
 import mu.KotlinLogging
+import persistence.XMLSerializer
 import utils.ScannerInput
 import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
+import java.io.File
 import java.lang.System.exit
 import kotlin.system.exitProcess
 
-private val footballAPI = FootballAPI()
+private val footballAPI = FootballAPI(XMLSerializer(File("teams.xml")))
 
 private val logger = KotlinLogging.logger {}
 
@@ -23,8 +25,10 @@ fun mainMenu() : Int {
          > |   1) Add a Team                |
          > |   2) List all English Teams    |
          > |   3) Update a Team             |
-         > |   4) Delete a Team            |
+         > |   4) Delete a Team             |
          > ----------------------------------
+         > |   20) Save Teams               |
+         > |   21) Load Teams               |
          > |   0) Exit                      |
          > ----------------------------------
          > ==>> """.trimMargin(">"))
@@ -38,6 +42,8 @@ fun runMenu() {
             3  -> updateTeams()
             4  -> deleteTeams()
             0  -> exitApp()
+            20 -> save()
+            21 -> load()
             else -> println("Invalid option entered: $option")
         }
     } while (true)
@@ -102,3 +108,21 @@ fun exitApp(){
     println("Ill see you lad")
     exitProcess(0)
 }
+fun save() {
+    try {
+        footballAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun load() {
+    try {
+        footballAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
+}
+
+
+
