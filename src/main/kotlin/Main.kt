@@ -1,7 +1,13 @@
+import controllers.FootballAPI
+import models.Football
 import mu.KotlinLogging
 import utils.ScannerInput
+import utils.ScannerInput.readNextInt
+import utils.ScannerInput.readNextLine
 import java.lang.System.exit
 import kotlin.system.exitProcess
+
+private val footballAPI = FootballAPI()
 
 private val logger = KotlinLogging.logger {}
 
@@ -37,13 +43,23 @@ fun runMenu() {
     } while (true)
 }
 fun addTeams(){
-    logger.info { "addTeams() function invoked" }
+    // logger.info { "addTeams() function invoked" }
+    val teamName = readNextLine("Enter Team Name ")
+    val teamPosition = readNextInt("Enter League Position")
+    val League = readNextLine("Enter League")
+    val isAdded = footballAPI.add(Football(teamName, teamPosition,League, false))
 
+    if (isAdded) {
+        println("Added Successfully")
+    } else {
+        println("Not Added")
+    }
 }
 
 fun listTeams(){
-    logger.info { "listTeams() function invoked" }
+    // logger.info { "listTeams() function invoked" }
 
+    println(footballAPI.listAllTeams())
 }
 
 fun updateTeams(){
