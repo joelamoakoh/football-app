@@ -57,8 +57,6 @@ fun addTeams(){
 }
 
 fun listTeams(){
-    // logger.info { "listTeams() function invoked" }
-
     println(footballAPI.listAllTeams())
 }
 
@@ -68,9 +66,20 @@ fun updateTeams(){
 }
 
 fun deleteTeams(){
-    logger.info { "deleteTeams() function invoked" }
-
+    listTeams()
+    if (footballAPI.numberOfTeams() > 0) {
+        //only ask the user to choose the note to delete if notes exist
+        val indexToDelete = readNextInt("Enter the index of the team to delete: ")
+        //pass the index of the note to NoteAPI for deleting and check for success.
+        val teamToDelete = footballAPI.deleteTeam(indexToDelete)
+        if (teamToDelete != null) {
+            println("Delete Successful! Deleted Team: ${teamToDelete.teamName}")
+        } else {
+            println("Delete NOT Successful")
+        }
+    }
 }
+
 
 fun exitApp(){
     println("Ill see you lad")
