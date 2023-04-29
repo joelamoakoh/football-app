@@ -1,37 +1,35 @@
+import utils.ScannerInput
 import java.lang.System.exit
-import java.util.*
 
-val scanner = Scanner(System.`in`)
 
 fun main(args: Array<String>) {
     runMenu()
 }
 fun mainMenu() : Int {
-    print(""" 
+    return ScannerInput.readNextInt(""" 
          > ----------------------------------
-         >       Football App      
+         > |        Football App         |
          > ----------------------------------
-         > \\    NOTE MENU            //
-         >  \\   1) Add A Team       //
-         >   \\  2) League          //                  
-         > |  \\ 3) Update A Team  //           
-         > |   \\4) Delete a Team //            
+         > | English Teams                  |
+         > |   1) Add a Team                |
+         > |   2) List all English Teams    |
+         > |   3) Update a Team             |
+         > |   4) Delete a Team            |
          > ----------------------------------
-         > |  \\  0) Exit    //                  |
+         > |   0) Exit                      |
          > ----------------------------------
          > ==>> """.trimMargin(">"))
-    return scanner.nextInt()
 }
+
 fun runMenu() {
     do {
-        val option = mainMenu()
-        when (option) {
+        when (val option = mainMenu()) {
             1  -> addNote()
             2  -> listNotes()
             3  -> updateNote()
             4  -> deleteNote()
             0  -> exitApp()
-            else -> println("Invalid option entered: " + option)
+            else -> println("Invalid option entered: $option")
         }
     } while (true)
 }
@@ -52,6 +50,6 @@ fun deleteNote(){
 }
 
 fun exitApp(){
-    println("Exiting...bye")
+    println("Ill see you lad")
     exit(0)
 }
