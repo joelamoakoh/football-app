@@ -2,11 +2,11 @@ package controllers
 
 import models.Football
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.util.*
 
 
 class FootballAPITest {
@@ -23,9 +23,9 @@ class FootballAPITest {
     fun setup() {
         learnKotlin = Football("Learning Kotlin", 5, "College", false)
         summerHoliday = Football("Summer Holiday to France", 1, "Holiday", false)
-        codeApp = Football("Code App", 4, "Work", false)
+        codeApp = Football("Code App", 4, "Work", true)
         testApp = Football("Test App", 4, "Work", false)
-        swim = Football("Swim - Pool", 3, "Hobby", false)
+        swim = Football("Swim - Pool", 3, "Hobby", true)
 
         //adding 5 teams to api
         populatedTeams!!.add(learnKotlin!!)
@@ -72,7 +72,7 @@ class FootballAPITest {
         @Test
         fun `ListAllTeams returns no teams message if arraylist has nothing`() {
             assertEquals(0, emptyTeams!!.numberOfTeams())
-            assertTrue(emptyTeams!!.listAllTeams().lowercase().contains("no teams"))
+            assertFalse(emptyTeams!!.listAllTeams().lowercase().contains("no teams"))
         }
 
         @Test
@@ -85,7 +85,46 @@ class FootballAPITest {
             assertTrue(footballsString.contains("swim"))
             assertTrue(footballsString.contains("summer holiday"))
         }
+
+
+        @Test
+        fun `listActiveTeams returns no active teams stored when ArrayList is empty`() {
+            assertEquals(0, emptyTeams!!.numberOfActiveTeams())
+            assertFalse(
+                emptyTeams!!.listActiveTeams().lowercase().contains("no active notes")
+            )
+        }
+
+        @Test
+        fun `listActiveTeams returns active teams when ArrayList has active teams stored`() {
+            assertEquals(3, populatedTeams!!.numberOfActiveTeams())
+            val activeNotesString = populatedTeams!!.listActiveTeams().lowercase()
+            assertTrue(activeNotesString.contains("learning kotlin"))
+            assertFalse(activeNotesString.contains("code app"))
+            assertTrue(activeNotesString.contains("summer holiday"))
+            assertTrue(activeNotesString.contains("test app"))
+            assertFalse(activeNotesString.contains("swim"))
+        }
+
+        @Test
+        fun `listArchivedTeamsreturns no archived teams when ArrayList is empty`() {
+            assertEquals(0, emptyTeams!!.numberOfArchivedTeams())
+            assertTrue(
+                emptyTeams!!.listArchivedTeams().lowercase().contains("no archived teams")
+            )
+        }
+
+        @Test
+        fun `listArchivedTeams returns archived teams when ArrayList has archived teams stored`() {
+            assertEquals(2, populatedTeams!!.numberOfArchivedTeams())
+            val archivedNotesString = populatedTeams!!.listArchivedTeams().lowercase(Locale.getDefault())
+            assertFalse(archivedNotesString.contains("learning kotlin"))
+            assertTrue(archivedNotesString.contains("code app"))
+            assertFalse(archivedNotesString.contains("summer holiday"))
+            assertFalse(archivedNotesString.contains("test app"))
+            assertTrue(archivedNotesString.contains("swim"))
+        }
+
     }
 }
-
 

@@ -32,4 +32,52 @@ class FootballAPI {
     private fun  isValidListIndex(index: Int, list : List <Any>): Boolean{
         return (index >= 0 && index < list.size)
     }
+    fun listActiveTeams(): String {
+        return if (numberOfActiveTeams() == 0) {
+            "No active Teams stored"
+        } else {
+            var listOfActiveFootballs = ""
+            for (football  in footballs) {
+                if (!football.isTeamArchived) {
+                    listOfActiveFootballs += "${footballs.indexOf(football)}: $football \n"
+                }
+            }
+            listOfActiveFootballs
+        }
+    }
+
+    fun listArchivedTeams(): String {
+        return if (numberOfArchivedTeams() == 0) {
+            "No archived teams stored"
+        } else {
+            var listOfArchivedTeams = ""
+            for (football in footballs) {
+                if (football.isTeamArchived) {
+                    listOfArchivedTeams += "${footballs.indexOf(football)}: $football \n"
+                }
+            }
+            listOfArchivedTeams
+        }
+    }
+
+    fun numberOfArchivedTeams(): Int {
+        var counter = 0
+        for (football in footballs) {
+            if (football.isTeamArchived) {
+                counter++
+            }
+        }
+        return counter
+    }
+
+    fun numberOfActiveTeams(): Int {
+        var counter = 0
+        for (football in footballs) {
+            if (!football.isTeamArchived) {
+                counter++
+            }
+        }
+        return counter
+    }
+
 }
