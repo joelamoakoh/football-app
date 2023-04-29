@@ -20,4 +20,16 @@ class FootballAPI {
             listOfTeams
         }
     }
+    fun numberOfTeams(): Int {
+        return footballs.size
+    }
+    fun findTeam(index: Int): Football?{
+        return if (isValidListIndex(index, footballs)){
+            footballs[index]
+        }
+        else null
+    }
+    private fun  isValidListIndex(index: Int, list : List <Any>): Boolean{
+        return (index >= 0 && index < list.size)
+    }
 }
