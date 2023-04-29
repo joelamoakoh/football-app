@@ -29,7 +29,7 @@ class FootballAPI {
         }
         else null
     }
-    fun  isValidListIndex(index: Int, list : List <Any>): Boolean{
+    private fun  isValidListIndex(index: Int, list : List <Any>): Boolean{
         return (index >= 0 && index < list.size)
     }
 }
