@@ -11,17 +11,9 @@ class FootballAPI(serializerType: Serializer) {
         return footballs.add(football)
     }
 
-    fun listAllTeams(): String {
-        return if (footballs.isEmpty()) {
-            "No notes stored"
-        } else {
-            var listOfTeams = ""
-            for (i in footballs.indices) {
-                listOfTeams += "${i}: ${footballs[i]} \n"
-            }
-            listOfTeams
-        }
-    }
+    fun listAllTeams(): String =
+        if (footballs.isEmpty()) "No Teams Stored"
+    else formatListString(footballs.filter { football: Football -> football.isTeamArchived  })
     fun numberOfTeams(): Int {
         return footballs.size
     }
@@ -34,82 +26,37 @@ class FootballAPI(serializerType: Serializer) {
     fun  isValidListIndex(index: Int, list : List <Any>): Boolean{
         return (index >= 0 && index < list.size)
     }
-    fun listActiveTeams(): String {
-        return if (numberOfActiveTeams() == 0) {
-            "No active Teams stored"
-        } else {
-            var listOfActiveFootballs = ""
-            for (football  in footballs) {
-                if (!football.isTeamArchived) {
-                    listOfActiveFootballs += "${footballs.indexOf(football)}: $football \n"
-                }
-            }
-            listOfActiveFootballs
-        }
+    fun listActiveTeams(): String =
+        if (footballs.isEmpty()) "No teams Stored"
+    else formatListString(footballs.filter { football: Football -> !football.isTeamArchived  })
+
+
+
+    fun listArchivedTeams(): String =
+        if(numberOfArchivedTeams() == 0) "No archived teams stored"
+    else formatListString(footballs.filter {football: Football -> football.isTeamArchived })
+
+    fun numberOfArchivedTeams(): Int = footballs.count{ football: Football ->football.isTeamArchived  }
+
+
+
+    fun numberOfActiveTeams() {
+        footballs.stream()
+            .filter { footballs: Football -> !footballs.isTeamArchived}
+            .count()
+            .toInt()
     }
 
-    fun listArchivedTeams(): String {
-        return if (numberOfArchivedTeams() == 0) {
-            "No archived teams stored"
-        } else {
-            var listOfArchivedTeams = ""
-            for (football in footballs) {
-                if (football.isTeamArchived) {
-                    listOfArchivedTeams += "${footballs.indexOf(football)}: $football \n"
-                }
-            }
-            listOfArchivedTeams
-        }
-    }
 
-    fun numberOfArchivedTeams(): Int {
-        var counter = 0
-        for (football in footballs) {
-            if (football.isTeamArchived) {
-                counter++
-            }
+    fun listTeamsBySelectedPriority(priority: Int): String =
+        if (footballs.isEmpty()) "No Teams Stored"
+       else {
+           val listOfTeams = formatListString(footballs.filter { football -> football.teamPosition== priority  })
+            if (listOfTeams.equals("")) "No teams with priority: $priority"
+            else "${numberOfTeamsByPriority(priority)} teams with priority $priority: $listOfTeams"
         }
-        return counter
-    }
 
-    fun numberOfActiveTeams(): Int {
-        var counter = 0
-        for (football in footballs) {
-            if (!football.isTeamArchived) {
-                counter++
-            }
-        }
-        return counter
-    }
-    fun listTeamsBySelectedPriority(priority: Int): String {
-        return if (footballs.isEmpty()) {
-            "No teams stored"
-        } else {
-            var listOfTeams = ""
-            for (i in footballs.indices) {
-                if (footballs[i].teamPosition == priority) {
-                    listOfTeams +=
-                        """$i: ${footballs[i]}
-                        """.trimIndent()
-                }
-            }
-            if (listOfTeams.equals("")) {
-                "No teams with priority: $priority"
-            } else {
-                "${numberOfTeamsByPriority(priority)} teams with priority $priority: $listOfTeams"
-            }
-        }
-    }
-
-    fun numberOfTeamsByPriority(priority: Int): Int {
-        var counter = 0
-        for (football in footballs) {
-            if (football.teamPosition == priority) {
-                counter++
-            }
-        }
-        return counter
-    }
+    fun numberOfTeamsByPriority(priority: Int): Int = footballs.count {f: Football -> f.teamPosition == priority}
     fun deleteTeam(indexToDelete: Int): Football? {
         return if (isValidListIndex(indexToDelete, footballs)) {
             footballs.removeAt(indexToDelete)
@@ -153,6 +100,15 @@ class FootballAPI(serializerType: Serializer) {
         return false
     }
 
+    fun searchByName(searchString : String) =
+        formatListString(footballs.filter { football -> football.teamName.contains(searchString, ignoreCase = true)})
+
+
+    private fun formatListString(teamsToFormat: List<Football>): String =
+        teamsToFormat
+            .joinToString(separator = "\n") { football ->
+                footballs.indexOf(football).toString() + ": " + football.toString()
+            }
 
 
 

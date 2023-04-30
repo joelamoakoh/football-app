@@ -27,6 +27,7 @@ fun mainMenu() : Int {
          > |   3) Update a Team             |
          > |   4) Delete a Team             |
          > |   5) Archive a team            |
+         > |   6) Search a team             |
          > ----------------------------------
          > |   20) Save Teams               |
          > |   21) Load Teams               |
@@ -43,6 +44,7 @@ fun runMenu() {
             3  -> updateTeams()
             4  -> deleteTeams()
             5  -> archiveTeams()
+            6  -> searchTeam()
             0  -> exitApp()
             20 -> save()
             21 -> load()
@@ -87,6 +89,8 @@ fun listTeams() {
 }
 
 
+
+
 fun updateTeams() {
     listTeams()
     if (footballAPI.numberOfTeams() > 0) {
@@ -106,6 +110,12 @@ fun updateTeams() {
             println("There are no notes for this index number")
         }
     }
+}
+fun listArchivedTeams() {
+    println(footballAPI.listArchivedTeams())
+}
+fun listAllTeams() {
+    println(footballAPI.listAllTeams())
 }
 
 
@@ -150,10 +160,9 @@ fun listActiveTeams() {
 
 fun archiveTeams() {
     listActiveTeams()
-    if (footballAPI.numberOfActiveTeams() > 0) {
-        //only ask if team exists
-        val indexToArchive = readNextInt("Enter the index of the team to archive... ")
-        //pass the index of the team for archiving and check for success.
+    if (footballAPI.numberOfTeams() > 0) {
+        val indexToArchive = readNextInt("Enter the index of the note to archive: ")
+        //pass the index of the note to NoteAPI for archiving and check for success.
         if (footballAPI.archiveTeam(indexToArchive)) {
             println("Archive Successful!")
         } else {
@@ -161,13 +170,19 @@ fun archiveTeams() {
         }
     }
 }
-fun listAllTeams() {
-    println(footballAPI.listAllTeams())
+fun searchTeam(){
+    val searchName = readNextLine("Enter the description of your search: ")
+    val searchResult = footballAPI.searchByName(searchName)
+    if(searchResult.isEmpty()){
+        println("No teams found -.-")
+    } else {
+        println(searchResult)
+    }
 }
 
-fun listArchivedTeams() {
-    println(footballAPI.listArchivedTeams())
-}
+
+
+
 
 
 
