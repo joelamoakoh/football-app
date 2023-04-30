@@ -74,7 +74,7 @@ class FootballAPITest {
         @Test
         fun `ListAllTeams returns no teams message if arraylist has nothing`() {
             assertEquals(0, emptyTeams!!.numberOfTeams())
-            assertFalse(emptyTeams!!.listAllTeams().lowercase().contains("no teams"))
+            assertTrue(emptyTeams!!.listAllTeams().lowercase().contains("no teams"))
         }
 
         @Test
@@ -90,15 +90,15 @@ class FootballAPITest {
 
 
         @Test
-        fun `listActiveTeams returns no active teams stored when ArrayList is empty`() {
+        fun `listActive Teams returns no active teams stored when ArrayList is empty`() {
             assertEquals(0, emptyTeams!!.numberOfActiveTeams())
-            assertFalse(
+            assertTrue(
                 emptyTeams!!.listActiveTeams().lowercase().contains("no active notes")
             )
         }
 
         @Test
-        fun `listActiveTeams returns active teams when ArrayList has active teams stored`() {
+        fun `listActive Teams returns active teams when ArrayList has active teams stored`() {
             assertEquals(3, populatedTeams!!.numberOfActiveTeams())
             val activeNotesString = populatedTeams!!.listActiveTeams().lowercase()
             assertTrue(activeNotesString.contains("learning kotlin"))
@@ -109,7 +109,7 @@ class FootballAPITest {
         }
 
         @Test
-        fun `listArchivedTeamsreturns no archived teams when ArrayList is empty`() {
+        fun `listArchived Teams returns no archived teams when ArrayList is empty`() {
             assertEquals(0, emptyTeams!!.numberOfArchivedTeams())
             assertTrue(
                 emptyTeams!!.listArchivedTeams().lowercase().contains("no archived teams")
@@ -117,7 +117,7 @@ class FootballAPITest {
         }
 
         @Test
-        fun `listArchivedTeams returns archived teams when ArrayList has archived teams stored`() {
+        fun `listArchived Teams returns archived teams when ArrayList has archived teams stored`() {
             assertEquals(2, populatedTeams!!.numberOfArchivedTeams())
             val archivedNotesString = populatedTeams!!.listArchivedTeams().lowercase(Locale.getDefault())
             assertFalse(archivedNotesString.contains("learning kotlin"))
@@ -268,6 +268,73 @@ class FootballAPITest {
             assertFalse(populatedTeams!!.findTeam(1)!!.isTeamArchived)
             assertTrue(populatedTeams!!.archiveTeam(1))
             assertTrue(populatedTeams!!.findTeam(1)!!.isTeamArchived)
+        }
+    }
+    @Nested
+    inner class CountingMethods {
+
+        @Test
+        fun numberOfTeamsCalculatedCorrectly() {
+            assertEquals(5, populatedTeams!!.numberOfTeams())
+            assertEquals(0, emptyTeams!!.numberOfTeams())
+        }
+
+        @Test
+        fun numberOfArchivedTeamsCalculatedCorrectly() {
+            assertEquals(2, populatedTeams!!.numberOfArchivedTeams())
+            assertEquals(0, emptyTeams!!.numberOfArchivedTeams())
+        }
+
+        @Test
+        fun numberOfActiveTeamsCalculatedCorrectly() {
+            assertEquals(3, populatedTeams!!.numberOfActiveTeams())
+            assertEquals(0, emptyTeams!!.numberOfActiveTeams())
+        }
+
+        @Test
+        fun numberOfTeamsByPriorityCalculatedCorrectly() {
+            assertEquals(1, populatedTeams!!.numberOfTeamsByPriority(1))
+            assertEquals(0, populatedTeams!!.numberOfTeamsByPriority(2))
+            assertEquals(1, populatedTeams!!.numberOfTeamsByPriority(3))
+            assertEquals(2, populatedTeams!!.numberOfTeamsByPriority(4))
+            assertEquals(1, populatedTeams!!.numberOfTeamsByPriority(5))
+            assertEquals(0, emptyTeams!!.numberOfTeamsByPriority(1))
+        }
+    }
+    @Nested
+    inner class SearchMethods {
+
+        @Test
+        fun `search teams by title returns no teams when no teams with that title exist`() {
+
+            assertEquals(5, populatedTeams!!.numberOfTeams())
+            val searchResults = populatedTeams!!.searchByName("no results expected")
+            assertTrue(searchResults.isEmpty())
+
+
+            assertEquals(0, emptyTeams!!.numberOfTeams())
+            assertTrue(emptyTeams!!.searchByName("").isEmpty())
+        }
+
+        @Test
+        fun `search notes by title returns notes when teams with that title exist`() {
+            assertEquals(5, populatedTeams!!.numberOfTeams())
+
+            var searchResults = populatedTeams!!.searchByName("Code App")
+            assertTrue(searchResults.contains("Code App"))
+            assertFalse(searchResults.contains("Test App"))
+
+
+            searchResults = populatedTeams!!.searchByName("App")
+            assertTrue(searchResults.contains("Code App"))
+            assertTrue(searchResults.contains("Test App"))
+            assertFalse(searchResults.contains("Swim - Pool"))
+
+
+            searchResults = populatedTeams!!.searchByName("aPp")
+            assertTrue(searchResults.contains("Code App"))
+            assertTrue(searchResults.contains("Test App"))
+            assertFalse(searchResults.contains("Swim - Pool"))
         }
     }
 
