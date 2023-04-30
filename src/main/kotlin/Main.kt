@@ -1,5 +1,11 @@
+/**
+ * Made by Joel Amoakoh
+ * Student 20096482
+ */
 import controllers.FootballAPI
+import controllers.ScoresAPI
 import models.Football
+import models.Score
 import mu.KotlinLogging
 import persistence.XMLSerializer
 import utils.ScannerInput
@@ -10,6 +16,7 @@ import java.lang.System.exit
 import kotlin.system.exitProcess
 
 private val footballAPI = FootballAPI(XMLSerializer(File("teams.xml")))
+private val scoresAPI = ScoresAPI(XMLSerializer(File("scores.xml")))
 
 private val logger = KotlinLogging.logger {}
 
@@ -28,9 +35,14 @@ fun mainMenu() : Int {
          > |   4) Delete a Team             |
          > |   5) Archive a team            |
          > |   6) Search a team             |
+         > |   7) Add Most Memorable Score  |
+         > |   8) List Most Memorable Scores|
+         > |   9) Delete a Score -.-        |
          > ----------------------------------
          > |   20) Save Teams               |
          > |   21) Load Teams               |
+         > |   22) Save Scores              |
+         > |   23) Load Scores              |
          > |   0) Exit                      |
          > ----------------------------------
          > ==>> """.trimMargin(">"))
@@ -45,26 +57,19 @@ fun runMenu() {
             4  -> deleteTeams()
             5  -> archiveTeams()
             6  -> searchTeam()
+            7  -> addScore()
+            8  -> listScore()
+            9  -> deleteScore()
             0  -> exitApp()
             20 -> save()
             21 -> load()
+            22 -> save1()
+            23 -> load1()
             else -> println("Invalid option entered: $option")
         }
     } while (true)
 }
-fun addTeams(){
-    // logger.info { "addTeams() function invoked" }
-    val teamName = readNextLine("Enter Team Name ")
-    val teamPosition = readNextInt("Enter League Position")
-    val League = readNextLine("Enter League")
-    val isAdded = footballAPI.add(Football(teamName, teamPosition,League, false))
 
-    if (isAdded) {
-        println("Added Successfully")
-    } else {
-        println("Not Added")
-    }
-}
 
 fun listTeams() {
     if (footballAPI.numberOfTeams() > 0) {
@@ -122,9 +127,7 @@ fun listAllTeams() {
 fun deleteTeams(){
     listTeams()
     if (footballAPI.numberOfTeams() > 0) {
-        //only ask the user to choose the note to delete if notes exist
         val indexToDelete = readNextInt("Enter the index of the team to delete: ")
-        //pass the index of the note to NoteAPI for deleting and check for success.
         val teamToDelete = footballAPI.deleteTeam(indexToDelete)
         if (teamToDelete != null) {
             println("Delete Successful! Deleted Team: ${teamToDelete.teamName}")
@@ -179,9 +182,62 @@ fun searchTeam(){
         println(searchResult)
     }
 }
+fun addScore(){
 
+    val firstTeam = readNextLine("Enter First Team Name ")
+    val secondTeam = readNextLine("Enter Second Team Name ")
+    val score1 = readNextInt("Enter First Team Score")
+    val score2 = readNextInt("Enter Second Team Score")
+    val scoreAdded = scoresAPI.input(Score(firstTeam, secondTeam,score1, score2,false))
 
+    if (scoreAdded) {
+        println("Added Successfully")
+    } else {
+        println("Not Added")
+    }
+}
+fun addTeams(){
 
+    val teamName = readNextLine("Enter Team Name ")
+    val teamPosition = readNextInt("Enter League Position")
+    val League = readNextLine("Enter League")
+    val isAdded = footballAPI.add(Football(teamName, teamPosition,League, false))
+
+    if (isAdded) {
+        println("Added Successfully")
+    } else {
+        println("Not Added")
+    }
+}
+fun save1() {
+    try {
+        scoresAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+fun load1() {
+    try {
+        scoresAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
+}
+fun listScore(){
+println(scoresAPI.listScores())
+}
+fun deleteScore(){
+    listScore()
+    if (scoresAPI.numberOfScores() > 0){
+        val scoresToDelete = readNextInt("Enter the index of the score to delete.... ")
+        val scoreToDelete = scoresAPI.deleteScore (scoresToDelete)
+        if (scoreToDelete != null){
+            println("Delete Successful ! Deleted score: ${scoreToDelete.firstTeam}")
+        }else{
+            println("Delete couldn't happen")
+        }
+    }
+}
 
 
 
